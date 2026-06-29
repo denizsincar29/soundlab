@@ -314,13 +314,24 @@ async function synthNoteOn() {
     return;
   }
   if (currentVoice) currentVoice.stopNow();
-  currentVoice = new AdditiveVoice(engine.ctx, engine.destination, currentPreset);
-  const { sustainStartTime } = currentVoice.noteOn(freq);
+  // Capture this specific voice in a local variable rather than relying on
+  // the module-level currentVoice binding inside the auto-release timer
+  // below. Without this, pressing play again before a one-shot preset
+  // (a bell) finishes ringing leaves the OLD timer pending; it later fires
+  // and calls noteOff on whatever currentVoice happens to be by then (the
+  // newer voice), cutting it off after a seemingly arbitrary, but actually
+  // exactly-leftover, amount of time.
+  const voice = new AdditiveVoice(engine.ctx, engine.destination, currentPreset);
+  currentVoice = voice;
+  const { sustainStartTime } = voice.noteOn(freq);
   announcer.say(`Playing ${currentPreset.name} at ${freq.toFixed(1)} hertz.`);
   if (currentPreset.oneShot) {
     const delayMs = Math.max(0, (sustainStartTime - engine.ctx.currentTime) * 1000);
     setTimeout(() => {
-      if (currentVoice) currentVoice.noteOff();
+      // Only auto-release if this voice is still the one playing. If the
+      // user has since started a different note, this one was already
+      // stopped or replaced, and the timer must not touch the new one.
+      if (currentVoice === voice) voice.noteOff();
     }, delayMs);
   }
 }
@@ -347,6 +358,17 @@ function synthNoteOff() {
 //    silently did nothing under NVDA before. A click with no prior
 //    pointer/key activity on this gesture is treated as a plain on/off
 //    toggle instead of a hold, since there is no hold to detect.
+//
+// The shared synthGestureHandled flag is what lets the click handler tell
+// these apart, and the timing of when it gets cleared matters: it must
+// stay true through the click event the browser fires right after
+// pointerup/keyup for a real gesture, or that click falls through to the
+// "no prior gesture" branch below and silently starts a brand new note
+// right after the one that was just stopped. Clearing happens in a
+// setTimeout (after the synchronous pointerdown/pointerup/click sequence
+// has already run its course) as a safety net for paths with no trailing
+// click at all, such as pointercancel or a keyboard path where
+// preventDefault suppressed the synthetic click entirely.
 synthPlayBtn.addEventListener('pointerdown', (event) => {
   try {
     synthPlayBtn.setPointerCapture(event.pointerId);
@@ -359,10 +381,11 @@ synthPlayBtn.addEventListener('pointerdown', (event) => {
 
 ['pointerup', 'pointercancel'].forEach((eventName) => {
   synthPlayBtn.addEventListener(eventName, () => {
-    if (synthGestureHandled) {
+    if (!synthGestureHandled) return;
+    synthNoteOff();
+    setTimeout(() => {
       synthGestureHandled = false;
-      synthNoteOff();
-    }
+    }, 0);
   });
 });
 
@@ -377,14 +400,16 @@ synthPlayBtn.addEventListener('keydown', (event) => {
 synthPlayBtn.addEventListener('keyup', (event) => {
   if ((event.code === 'Space' || event.code === 'Enter') && synthGestureHandled) {
     event.preventDefault();
-    synthGestureHandled = false;
     synthNoteOff();
+    setTimeout(() => {
+      synthGestureHandled = false;
+    }, 0);
   }
 });
 
 synthPlayBtn.addEventListener('click', () => {
   if (synthGestureHandled) {
-    // Tail end of a pointer or keyboard gesture already handled above.
+    // Tail end of a pointer or keyboard gesture already fully handled above.
     synthGestureHandled = false;
     return;
   }
@@ -394,6 +419,7 @@ synthPlayBtn.addEventListener('click', () => {
     synthNoteOn();
   }
 });
+
 
 presetApplyBtn.addEventListener('click', () => {
   try {

@@ -89,26 +89,41 @@ export class AdditiveVoice {
     this._scheduleHardStop(maxReleaseEnd + 0.05);
   }
 
-  // Immediately silences and tears down this voice with no fade. Used for
-  // the global panic stop and before starting a fresh note on reuse.
+  // Silences this voice quickly but without an audible click, then tears
+  // it down. Used for the global panic stop and whenever a new note
+  // replaces one that is still sounding. An instant gain.value assignment
+  // is a sample-domain discontinuity if the level was not already near
+  // zero, so this fades over a few milliseconds via cancelAndHoldAtTime
+  // first, and only stops the oscillators once that fade has finished.
   stopNow() {
     clearTimeout(this._releaseTimer);
-    const now = this.ctx.currentTime;
-    for (const partial of this.partials) {
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const fadeOutEnd = now + 0.012;
+    const partialsToStop = this.partials;
+    for (const partial of partialsToStop) {
       try {
-        partial.gain.gain.cancelScheduledValues(now);
-        partial.gain.gain.value = MIN_GAIN;
-        partial.osc.stop();
+        if (typeof partial.gain.gain.cancelAndHoldAtTime === 'function') {
+          partial.gain.gain.cancelAndHoldAtTime(now);
+        } else {
+          partial.gain.gain.cancelScheduledValues(now);
+        }
+        partial.gain.gain.linearRampToValueAtTime(MIN_GAIN, fadeOutEnd);
       } catch (err) {
-        // Oscillator may already be stopped; nothing to do.
-      }
-      try {
-        partial.osc.disconnect();
-        partial.gain.disconnect();
-      } catch (err) {
-        // Already disconnected.
+        // Already torn down; nothing to fade.
       }
     }
+    setTimeout(() => {
+      for (const partial of partialsToStop) {
+        try {
+          partial.osc.stop();
+          partial.osc.disconnect();
+          partial.gain.disconnect();
+        } catch (err) {
+          // Already stopped/disconnected.
+        }
+      }
+    }, 20);
     this.partials = [];
     this.active = false;
   }
