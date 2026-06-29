@@ -1,0 +1,72 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Music Box",
+  "description": "Bright, short bell tine. Same idea as Tubular Bell, tuned smaller and faster.",
+  "baseFrequencyDefault": 880,
+  "oneShot": true,
+  "outputGainDb": -2,
+  "filter": {
+    "type": "lowpass",
+    "frequency": 9000,
+    "q": 0.7
+  },
+  "partials": [
+    {
+      "ratio": 1,
+      "amplitude": 1,
+      "envelope": {
+        "attack": 0.001,
+        "decay": 1.2,
+        "sustain": 0,
+        "release": 0.1,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 3,
+      "detuneCents": 4,
+      "amplitude": 0.5,
+      "envelope": {
+        "attack": 0.001,
+        "decay": 1,
+        "sustain": 0,
+        "release": 0.1,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 4.2,
+      "amplitude": 0.35,
+      "envelope": {
+        "attack": 0.001,
+        "decay": 0.7,
+        "sustain": 0,
+        "release": 0.1,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 6,
+      "detuneCents": -3,
+      "amplitude": 0.2,
+      "envelope": {
+        "attack": 0.001,
+        "decay": 0.5,
+        "sustain": 0,
+        "release": 0.1,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 8.4,
+      "amplitude": 0.1,
+      "envelope": {
+        "attack": 0.001,
+        "decay": 0.3,
+        "sustain": 0,
+        "release": 0.1,
+        "decayCurve": "exponential"
+      }
+    }
+  ]
+}

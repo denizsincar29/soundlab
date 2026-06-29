@@ -1,0 +1,320 @@
+/*
+  Visual identity: a quiet lab-instrument look, built around an oscilloscope
+  trace. Near-black background, a phosphor-green accent for the primary
+  signal (sine/play state), and a warm amber accent reserved for the
+  resonant/percussive synth section (bells, organ). Monospace is used for
+  numeric readouts to read like a real instrument display; the body face is
+  the platform's own UI font for plain labels and paragraphs.
+*/
+
+:root {
+  --bg: #0b0e12;
+  --surface: #141a20;
+  --surface-raised: #1a222a;
+  --border: #26323d;
+  --text: #e7eef0;
+  --text-muted: #9fb0b8;
+  --accent: #4dff9f;
+  --accent-warm: #ffb454;
+  --danger: #ff6a6a;
+  --focus-ring: #7be8ff;
+
+  --font-body: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.55;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+}
+
+header {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 1rem;
+}
+
+h1 {
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  font-size: 1.9rem;
+  margin: 0 0 0.25rem;
+  background: linear-gradient(90deg, var(--accent), var(--focus-ring));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tagline {
+  color: var(--text-muted);
+  margin: 0 0 1rem;
+}
+
+h2 {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  letter-spacing: 0.01em;
+  margin-top: 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+h3 {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+p {
+  max-width: 62ch;
+}
+
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--accent);
+  color: #04140c;
+  padding: 0.5rem 1rem;
+  font-family: var(--font-mono);
+  z-index: 10;
+}
+
+.skip-link:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+nav[aria-label="Sections"] {
+  max-width: 760px;
+  margin: 0 auto 1.5rem;
+  padding: 0 1.25rem;
+}
+
+nav[aria-label="Sections"] ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+nav[aria-label="Sections"] a {
+  color: var(--accent);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  border-bottom: 1px dashed transparent;
+}
+
+nav[aria-label="Sections"] a:hover,
+nav[aria-label="Sections"] a:focus-visible {
+  border-bottom-color: var(--accent);
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 1.25rem 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+#synth.panel {
+  border-left-color: var(--accent-warm);
+}
+
+#help.panel {
+  border-left-color: var(--text-muted);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.9rem 0;
+  max-width: 30rem;
+}
+
+.checkbox-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.5rem 0.6rem;
+}
+
+textarea {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+output {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.15rem 0.5rem;
+  display: inline-block;
+  width: fit-content;
+}
+
+button {
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.6rem 1.1rem;
+  cursor: pointer;
+  margin: 0.3rem 0.3rem 0.3rem 0;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button[aria-pressed="true"] {
+  background: var(--accent);
+  color: #04140c;
+  border-color: var(--accent);
+}
+
+button.danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+button.danger:hover {
+  background: var(--danger);
+  color: #1a0606;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+fieldset {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem 1rem;
+}
+
+legend {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 0 0.4rem;
+}
+
+.hint {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  border-top: 1px dashed var(--border);
+  padding-top: 0.75rem;
+}
+
+dialog {
+  background: var(--surface-raised);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  max-width: 32rem;
+  padding: 1.5rem;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 1rem;
+}
+
+dt {
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+
+dd {
+  margin: 0;
+}
+
+footer {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem 3rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

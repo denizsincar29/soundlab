@@ -1,0 +1,135 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Tubular Bell",
+  "description": "Struck metal bar with inharmonic, independently decaying partials.",
+  "baseFrequencyDefault": 220,
+  "oneShot": true,
+  "outputGainDb": -4,
+  "filter": {
+    "type": "lowpass",
+    "frequency": 6000,
+    "q": 0.7
+  },
+  "partials": [
+    {
+      "ratio": 0.561,
+      "detuneCents": 2,
+      "amplitude": 1,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 4.5,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 0.565,
+      "detuneCents": -2,
+      "amplitude": 0.9,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 4.2,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 0.92,
+      "detuneCents": 0,
+      "amplitude": 0.85,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 3.6,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 0.923,
+      "detuneCents": -3,
+      "amplitude": 0.75,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 3.3,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 1.19,
+      "detuneCents": 0,
+      "amplitude": 0.7,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 2.6,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 1.7,
+      "detuneCents": 0,
+      "amplitude": 0.5,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.8,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 2,
+      "detuneCents": 0,
+      "amplitude": 0.45,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.5,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 2.74,
+      "detuneCents": 0,
+      "amplitude": 0.3,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 3.76,
+      "detuneCents": 0,
+      "amplitude": 0.2,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 0.6,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 4.07,
+      "detuneCents": 0,
+      "amplitude": 0.15,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 0.5,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    }
+  ]
+}

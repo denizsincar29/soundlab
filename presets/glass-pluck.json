@@ -1,0 +1,42 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Glass Pluck",
+  "description": "Bright, slightly inharmonic plucked tone with a fast percussive decay.",
+  "baseFrequencyDefault": 523.25,
+  "oneShot": true,
+  "outputGainDb": -3,
+  "filter": {
+    "type": "highpass",
+    "frequency": 200,
+    "q": 0.5
+  },
+  "envelope": {
+    "attack": 0.001,
+    "decay": 0.9,
+    "sustain": 0,
+    "release": 0.2,
+    "decayCurve": "exponential"
+  },
+  "partials": [
+    {
+      "ratio": 1,
+      "amplitude": 1
+    },
+    {
+      "ratio": 2,
+      "amplitude": 0.6
+    },
+    {
+      "ratio": 3,
+      "amplitude": 0.4
+    },
+    {
+      "ratio": 4.2,
+      "amplitude": 0.3
+    },
+    {
+      "ratio": 6.3,
+      "amplitude": 0.15
+    }
+  ]
+}

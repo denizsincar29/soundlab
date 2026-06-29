@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase Lab: waveforms, antiphase, and additive synthesis</title>
+<meta name="description" content="Generate waveforms, compare in-phase and antiphase signals, align phase across two devices by ear, and play additive synth presets like bells and organs.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<header>
+  <h1>Phase Lab</h1>
+  <p class="tagline">Waveforms, antiphase, and additive synthesis, all in the browser.</p>
+
+  <div id="audio-gate" class="panel">
+    <button type="button" id="enable-audio-btn">Enable audio</button>
+    <p id="audio-status" role="status">Audio is off. Click Enable audio to start, then everything else below will work.</p>
+  </div>
+
+  <div class="transport panel">
+    <div class="field">
+      <label for="master-volume">Master volume</label>
+      <input type="range" id="master-volume" min="0" max="100" value="80">
+      <output id="master-volume-value" for="master-volume">80%</output>
+    </div>
+    <button type="button" id="panic-btn" class="danger">Stop all sound (Escape)</button>
+  </div>
+</header>
+
+<nav aria-label="Sections">
+  <ul>
+    <li><a href="#wave-lab">Wave lab</a></li>
+    <li><a href="#phase-router">Phase router</a></li>
+    <li><a href="#phase-align">Two-device phase alignment</a></li>
+    <li><a href="#synth">Synth presets</a></li>
+    <li><a href="#help">Hotkeys and help</a></li>
+  </ul>
+</nav>
+
+<div id="announcer-polite" class="visually-hidden" aria-live="polite"></div>
+<div id="announcer-assertive" class="visually-hidden" aria-live="assertive"></div>
+
+<main id="main-content">
+
+  <section id="wave-lab" aria-labelledby="wave-lab-heading" class="panel">
+    <h2 id="wave-lab-heading">Wave lab</h2>
+    <p>Generate one tone and shape it with a waveform type and overtones. This tone feeds the Phase router and the Phase alignment tool below.</p>
+
+    <div class="field">
+      <label for="wave-type">Waveform</label>
+      <select id="wave-type">
+        <option value="sine">Sine</option>
+        <option value="square">Square</option>
+        <option value="triangle">Triangle</option>
+        <option value="sawtooth">Sawtooth</option>
+        <option value="custom">Custom, built from the overtone sliders below</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="wave-frequency">Frequency (Hz)</label>
+      <input type="number" id="wave-frequency" min="20" max="8000" step="0.1" value="440">
+    </div>
+
+    <fieldset id="overtone-fieldset">
+      <legend>Overtones (used only when waveform is Custom)</legend>
+      <div id="overtone-controls"><!-- harmonic sliders inserted by JS --></div>
+    </fieldset>
+
+    <button type="button" id="wave-play-btn" aria-pressed="false">Play wave (Space)</button>
+  </section>
+
+  <section id="phase-router" aria-labelledby="phase-router-heading" class="panel">
+    <h2 id="phase-router-heading">Phase router: in-phase vs antiphase</h2>
+    <p>Sends the Wave lab tone to both stereo channels at once. Invert the right channel to hear what destructive interference would do if the two channels were ever summed into one, for example by a mono speaker, a shared cable, or one ear positioned to hear both speakers equally.</p>
+
+    <div class="field checkbox-field">
+      <input type="checkbox" id="invert-right">
+      <label for="invert-right">Invert right channel (antiphase)</label>
+    </div>
+
+    <div class="field-row">
+      <div class="field checkbox-field">
+        <input type="checkbox" id="mute-left">
+        <label for="mute-left">Mute left channel</label>
+      </div>
+      <div class="field checkbox-field">
+        <input type="checkbox" id="mute-right">
+        <label for="mute-right">Mute right channel</label>
+      </div>
+    </div>
+
+    <p class="hint">Note for headphone listening: inverting the right channel will not silence anything, because each ear only ever hears its own channel. The cancellation only happens once the two channels are physically or electrically combined into one.</p>
+  </section>
+
+  <section id="phase-align" aria-labelledby="phase-align-heading" class="panel">
+    <h2 id="phase-align-heading">Two-device phase alignment</h2>
+    <p>
+      Play the Wave lab tone on this device. Open this same page on a second device, for example a
+      phone, and play the same frequency there too. Stand between the two speakers and listen for the
+      loudest and quietest spots in the room. Drag the slider below to nudge this device's phase
+      forward or backward until you find the antiphase point, the spot where the combined sound goes
+      quietest.
+    </p>
+
+    <div class="field">
+      <label for="phase-slider">Phase offset (degrees)</label>
+      <input type="range" id="phase-slider" min="0" max="359" step="1" value="0">
+      <output id="phase-slider-value" for="phase-slider">0 degrees</output>
+    </div>
+
+    <div class="field">
+      <label for="pulse-duration">Nudge pulse length (milliseconds)</label>
+      <input type="range" id="pulse-duration" min="10" max="200" step="5" value="50">
+      <output id="pulse-duration-value" for="pulse-duration">50 ms</output>
+    </div>
+
+    <p class="hint">
+      How this works: a true cross-device phase lock is not possible from a web page, since each
+      device runs its own independent audio clock with no shared reference. Instead, dragging the
+      slider briefly shifts this device's oscillator away from its target frequency for a fraction of
+      a second, by exactly the amount of frequency offset needed to accumulate the requested phase
+      shift, then snaps back to the original frequency. Because the frequency change is continuous
+      rather than a restart, there is no click, only a short, calculated pitch blip. Repeated small
+      nudges let you walk the phase around by ear until you land on the quiet spot.
+    </p>
+  </section>
+
+  <section id="synth" aria-labelledby="synth-heading" class="panel">
+    <h2 id="synth-heading">Synth presets</h2>
+    <p>An additive synthesis instrument. Every preset is a list of partials (sine components at frequency ratios of a base note), each with its own attack, decay, sustain and release. Bells use many independently decaying, slightly mistuned partials; organs use a small stack of harmonics that sustain evenly while held.</p>
+
+    <div class="field">
+      <label for="preset-select">Preset</label>
+      <select id="preset-select"></select>
+    </div>
+
+    <div class="field">
+      <label for="base-note">Base note (name like A3, or a number of Hz)</label>
+      <input type="text" id="base-note" value="A3" autocomplete="off">
+      <output id="base-note-frequency" for="base-note" aria-live="off"></output>
+    </div>
+
+    <button type="button" id="synth-play-btn">Play preset (press and hold for sustaining presets)</button>
+
+    <div class="field-row">
+      <button type="button" id="preset-load-btn">Load preset from a JSON file</button>
+      <button type="button" id="preset-save-btn">Save current preset as a JSON file</button>
+    </div>
+
+    <div class="field">
+      <label for="preset-json">Preset definition (JSON, for advanced editing)</label>
+      <textarea id="preset-json" rows="16" spellcheck="false"></textarea>
+      <button type="button" id="preset-apply-btn">Apply JSON changes</button>
+      <p id="preset-json-status" role="status"></p>
+    </div>
+  </section>
+
+  <section id="help" aria-labelledby="help-heading" class="panel">
+    <h2 id="help-heading">Hotkeys and help</h2>
+    <button type="button" id="open-hotkeys-btn">Show hotkeys (Shift+?)</button>
+
+    <dialog id="hotkeys-dialog" aria-labelledby="hotkeys-dialog-heading">
+      <h3 id="hotkeys-dialog-heading">Keyboard shortcuts</h3>
+      <dl>
+        <dt>Space</dt>
+        <dd>Play or stop the Wave lab tone, when focus is not in a text field.</dd>
+        <dt>Escape</dt>
+        <dd>Stop all sound immediately, from anywhere on the page.</dd>
+        <dt>Shift+?</dt>
+        <dd>Open or close this dialog.</dd>
+        <dt>Arrow keys</dt>
+        <dd>Adjust whichever slider currently has focus, same as any standard range control.</dd>
+      </dl>
+      <button type="button" id="close-hotkeys-btn">Close</button>
+    </dialog>
+  </section>
+
+</main>
+
+<footer>
+  <p>Phase Lab runs entirely in your browser using the Web Audio API. Nothing is recorded, uploaded, or sent anywhere.</p>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

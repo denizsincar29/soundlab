@@ -1,0 +1,42 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Warm Pad",
+  "description": "Slow, sustaining pad with a touch of chorus-like detune on the upper partials.",
+  "baseFrequencyDefault": 220,
+  "oneShot": false,
+  "outputGainDb": -5,
+  "filter": {
+    "type": "lowpass",
+    "frequency": 3000,
+    "q": 0.6
+  },
+  "envelope": {
+    "attack": 0.7,
+    "decay": 0.4,
+    "sustain": 0.8,
+    "release": 1.4,
+    "attackCurve": "linear",
+    "decayCurve": "linear",
+    "releaseCurve": "exponential"
+  },
+  "partials": [
+    {
+      "ratio": 1,
+      "amplitude": 1
+    },
+    {
+      "ratio": 2,
+      "amplitude": 0.5,
+      "detuneCents": 6
+    },
+    {
+      "ratio": 3,
+      "amplitude": 0.3,
+      "detuneCents": -5
+    },
+    {
+      "ratio": 4,
+      "amplitude": 0.15
+    }
+  ]
+}
