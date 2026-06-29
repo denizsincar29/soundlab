@@ -2,6 +2,7 @@
   "schema": "phaselab-preset@1",
   "name": "Drawbar Organ",
   "description": "Tonewheel-organ style stack of harmonic drawbars with a percussive key click.",
+  "notes": "A small stack of purely harmonic ratios (0.5 through 8, modeled loosely on a tonewheel organ's drawbars) that all share one fast, even envelope, so the tone sustains at a flat level for as long as the note is held, the opposite of a bell's ever-changing per-partial decay. The ratio-9 partial is not a drawbar at all: it has its own near-instant attack and decay, completely independent of the shared envelope, and exists purely as a percussive \"key click\" transient at the very start of the note.",
   "baseFrequencyDefault": 261.63,
   "oneShot": false,
   "outputGainDb": -6,

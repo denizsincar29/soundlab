@@ -2,6 +2,7 @@
   "schema": "phaselab-preset@1",
   "name": "Warm Pad",
   "description": "Slow, sustaining pad with a touch of chorus-like detune on the upper partials.",
+  "notes": "Four purely harmonic partials (1, 2, 3, 4), so it stays consonant at any base frequency with no rumble or beating concerns from inharmonic content. The 2nd and 3rd partials are detuned a few cents apart (+6 and -5 cents) purely for a slow, chorus-like beating, not for tuning reasons. One shared envelope with a slow attack and release and a high sustain level, meant to be held rather than tapped.",
   "baseFrequencyDefault": 220,
   "oneShot": false,
   "outputGainDb": -5,

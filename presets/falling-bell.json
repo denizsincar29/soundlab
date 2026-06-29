@@ -1,0 +1,55 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Falling Bell",
+  "description": "Demonstrates a pitch glide: starts two octaves above the played note and slides down onto it.",
+  "notes": "Three harmonic partials (1, 2, 3) with a Glass-Pluck-like fast attack and slow exponential decay, but the interesting part is the top-level \"pitchGlide\" field: every partial's actual oscillator frequency ramps together from 4x the requested base frequency down to 1x (so it lands exactly on whatever note you played) over pitchGlide.duration seconds, using an exponential curve so the slide sounds like a constant musical interval per second rather than abrupt at either end. With the default base note (A4 / 440 Hz) this starts at A6 and lands on A4 four seconds later. pitchGlide has no UI controls yet; edit startRatio, endRatio, duration (seconds), or curve (\"linear\"/\"exponential\") directly in this preset's JSON below and click Apply to hear changes immediately for this session. Saving the preset keeps your edited pitchGlide values in the exported file.",
+  "baseFrequencyDefault": 440,
+  "oneShot": true,
+  "outputGainDb": -4,
+  "filter": {
+    "type": "lowpass",
+    "frequency": 5000,
+    "q": 0.7
+  },
+  "pitchGlide": {
+    "startRatio": 4,
+    "endRatio": 1,
+    "duration": 4,
+    "curve": "exponential"
+  },
+  "envelope": {
+    "attack": 0.01,
+    "decay": 4,
+    "sustain": 0,
+    "release": 0.3,
+    "decayCurve": "exponential"
+  },
+  "partials": [
+    {
+      "ratio": 1,
+      "amplitude": 1
+    },
+    {
+      "ratio": 2,
+      "amplitude": 0.5,
+      "envelope": {
+        "attack": 0.01,
+        "decay": 3.3,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 3,
+      "amplitude": 0.3,
+      "envelope": {
+        "attack": 0.01,
+        "decay": 2.6,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    }
+  ]
+}

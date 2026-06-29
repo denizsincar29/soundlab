@@ -61,11 +61,13 @@ possible: real struck-metal sounds have inharmonic partials that ring out at
 different rates, which a single oscillator (even with a rich waveform)
 cannot reproduce, but a stack of independently-decaying sines can.
 
-Five built-in presets:
+Six built-in presets:
 
 - **Tubular Bell** and **Music Box**: many partials at non-integer frequency
   ratios, several detuned a few cents from their neighbor to beat slowly,
-  each with its own (long, exponential) decay time and no sustain.
+  each with its own (long, exponential) decay time and no sustain. Tubular
+  Bell defaults to A5 since several of its partials sit below the played
+  note (real bell behavior, a "hum tone"), which gets boomy at low pitches.
 - **Drawbar Organ**: a small stack of harmonic ratios (sub-octave through the
   8th harmonic) that sustain evenly while held, plus one extra partial with
   an instant attack and decay used only as a percussive "key click"
@@ -74,12 +76,22 @@ Five built-in presets:
   fast exponential decay and no sustain.
 - **Warm Pad**: a few harmonic partials with a slow attack/release and a
   couple of partials detuned for a chorus-like shimmer.
+- **Falling Bell**: a short bell-ish tone with a `pitchGlide` (see below)
+  that slides every partial from four times the played frequency down to
+  the played frequency itself over 4 seconds; with the default base note
+  it audibly goes from A6 down to A4.
+
+Every preset has a `notes` field explaining exactly how its partial ratios,
+detunes, and envelopes were chosen and what its practical range is (JSON
+has no comment syntax, so this is how that documentation travels with a
+saved/loaded `.json` file). Read it in the JSON textarea after selecting a
+preset.
 
 Play by name or frequency in the "base note" field (accepts `A3`, `C#4`,
 `220`, etc). Sustaining presets (Drawbar Organ, Warm Pad) respond to
-press-and-hold; one-shot presets (the bells and the pluck) auto-release
-themselves once their slowest partial finishes decaying, so a single click
-or tap is enough.
+press-and-hold; one-shot presets (the bells, the pluck, and Falling Bell)
+auto-release themselves once their slowest partial finishes decaying, so a
+single click or tap is enough.
 
 #### Preset JSON schema
 
@@ -87,6 +99,7 @@ or tap is enough.
 {
   "schema": "phaselab-preset@1",
   "name": "My Bell",
+  "notes": "How this preset's partials and envelopes were chosen, and its practical pitch range. Optional, but the built-ins all have one.",
   "baseFrequencyDefault": 220,
   "oneShot": true,
   "outputGainDb": -4,
@@ -94,6 +107,9 @@ or tap is enough.
   "envelope": {                 // used by any partial that omits its own
     "attack": 0.01, "decay": 1.5, "sustain": 0, "release": 0.3,
     "attackCurve": "linear", "decayCurve": "exponential", "releaseCurve": "exponential"
+  },
+  "pitchGlide": {                // optional; omit entirely for a static pitch
+    "startRatio": 4, "endRatio": 1, "duration": 4, "curve": "exponential"
   },
   "partials": [
     { "ratio": 1, "amplitude": 1.0, "detuneCents": 0 },
@@ -105,10 +121,25 @@ or tap is enough.
 `ratio` multiplies the base frequency and does not need to be an integer
 (non-integer ratios are how inharmonic, bell-like timbres happen).
 `detuneCents` adds fine detune on top of that, handy for slow beating
-between two close partials. Edit the JSON directly in the "advanced editing"
-textarea and click Apply, or load/save a `.json` file with the buttons
-above it. Files exported from the app already match this schema, including
-the five built-ins under `presets/`.
+between two close partials.
+
+`pitchGlide` slides every partial's actual frequency together over time:
+each partial goes from `baseFrequency * startRatio * partial.ratio` to
+`baseFrequency * endRatio * partial.ratio` across `duration` seconds, so
+the whole sound sweeps in pitch while every partial stays locked to the
+others proportionally (it never goes inharmonic mid-glide). `endRatio` is
+usually `1`, so the glide lands exactly on whatever note you actually
+played. `curve` is `"linear"` (constant Hz/second) or `"exponential"`
+(constant musical interval/second, which is what a natural-sounding pitch
+sweep almost always wants). There is no dedicated slider for this yet;
+edit the four fields directly in the JSON textarea and click Apply to hear
+changes immediately in the current session, or Save to keep them in a
+`.json` file.
+
+Edit any preset's JSON directly in the "advanced editing" textarea and
+click Apply, or load/save a `.json` file with the buttons above it. Files
+exported from the app already match this schema, including the six
+built-ins under `presets/`.
 
 ## Hotkeys
 

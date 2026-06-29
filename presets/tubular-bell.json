@@ -2,7 +2,8 @@
   "schema": "phaselab-preset@1",
   "name": "Tubular Bell",
   "description": "Struck metal bar with inharmonic, independently decaying partials.",
-  "baseFrequencyDefault": 220,
+  "notes": "Ten partials at non-integer ratios of the base frequency (0.561, 0.565, 0.92, 0.923, 1.19, 1.7, 2.0, 2.74, 3.76, 4.07), loosely modeled on how real struck-bell partials are not exact harmonics. Two close pairs (0.561/0.565 and 0.92/0.923) sit a couple of cents apart so they beat slowly against each other, the classic bell shimmer. Each partial has its own, independently long, exponential decay, longest at the bottom, so the upper partials die out first while the fundamental rings on, the same direction real metal decays in. Four of the ratios are below 1, meaning those partials sit BELOW the played note (real bells have a low \"hum tone\" like this too); at low base frequencies that pushes them into a deep, cave-like rumble. This preset is clean and bell-like from about A5 (880 Hz) upward, which is why that is the default, and gets progressively darker and muddier below A4.",
+  "baseFrequencyDefault": 880,
   "oneShot": true,
   "outputGainDb": -4,
   "filter": {

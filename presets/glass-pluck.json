@@ -2,6 +2,7 @@
   "schema": "phaselab-preset@1",
   "name": "Glass Pluck",
   "description": "Bright, slightly inharmonic plucked tone with a fast percussive decay.",
+  "notes": "Five partials at ratios close to, but not exactly, a harmonic series (1, 2, 3, 4.2, 6.3): close enough to sound tonal, detuned enough at the top to sound glassy rather than purely musical. One shared envelope with a fast attack, fast exponential decay, and no sustain, so it always behaves like a pluck no matter how long the play button is actually held.",
   "baseFrequencyDefault": 523.25,
   "oneShot": true,
   "outputGainDb": -3,

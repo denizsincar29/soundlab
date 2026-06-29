@@ -26,6 +26,25 @@ export function validatePreset(preset) {
   if (preset.baseFrequencyDefault !== undefined && typeof preset.baseFrequencyDefault !== 'number') {
     errors.push('"baseFrequencyDefault" must be a number.');
   }
+  if (preset.notes !== undefined && typeof preset.notes !== 'string') {
+    errors.push('"notes" must be a string if present.');
+  }
+  if (preset.pitchGlide !== undefined) {
+    const glide = preset.pitchGlide;
+    if (!glide || typeof glide !== 'object') {
+      errors.push('"pitchGlide" must be an object with startRatio, endRatio, and duration.');
+    } else {
+      if (typeof glide.startRatio !== 'number' || !(glide.startRatio > 0)) {
+        errors.push('"pitchGlide.startRatio" must be a positive number.');
+      }
+      if (typeof glide.endRatio !== 'number' || !(glide.endRatio > 0)) {
+        errors.push('"pitchGlide.endRatio" must be a positive number.');
+      }
+      if (typeof glide.duration !== 'number' || !(glide.duration > 0)) {
+        errors.push('"pitchGlide.duration" must be a positive number of seconds.');
+      }
+    }
+  }
   if (!preset.envelope && preset.partials && preset.partials.some((p) => !p.envelope)) {
     errors.push('Provide a top-level "envelope", or an "envelope" on every partial.');
   }

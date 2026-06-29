@@ -2,6 +2,7 @@
   "schema": "phaselab-preset@1",
   "name": "Music Box",
   "description": "Bright, short bell tine. Same idea as Tubular Bell, tuned smaller and faster.",
+  "notes": "Five partials, all at or above the fundamental ratio (1, 3.0, 4.2, 6.0, 8.4), unlike Tubular Bell there is nothing below the played note, so there is no sub-fundamental rumble at any reasonable base frequency. Decays are much shorter (0.3 to 1.2 seconds) for a bright, quickly-dying tine instead of a long-ringing bar. Sounds clean across a wide pitch range, including low base frequencies, which is the main practical difference from Tubular Bell.",
   "baseFrequencyDefault": 880,
   "oneShot": true,
   "outputGainDb": -2,
