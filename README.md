@@ -1,4 +1,4 @@
-# Phase Lab
+# Sound Lab
 
 A browser-only Web Audio playground for waveforms, phase/antiphase, and
 additive synthesis. Plain HTML and ES6 modules, no build step, no
@@ -59,9 +59,12 @@ from a list of partials, each a plain sine oscillator with its own gain
 envelope, all summed together. This is what makes convincing bells
 possible: real struck-metal sounds have inharmonic partials that ring out at
 different rates, which a single oscillator (even with a rich waveform)
-cannot reproduce, but a stack of independently-decaying sines can.
+cannot reproduce, but a stack of independently-decaying sines can. A
+handful of optional layers on top of that core (a noise transient, a filter
+sweep, distortion, vibrato, tremolo) are what turn "additive bells" into
+plucked strings, a bowed violin, and an overdriven electric guitar.
 
-Six built-in presets:
+Eleven built-in presets:
 
 - **Tubular Bell** and **Music Box**: many partials at non-integer frequency
   ratios, several detuned a few cents from their neighbor to beat slowly,
@@ -80,6 +83,18 @@ Six built-in presets:
   that slides every partial from four times the played frequency down to
   the played frequency itself over 4 seconds; with the default base note
   it audibly goes from A6 down to A4.
+- **Nylon Guitar**: a plucked string (1/n-falloff harmonic partials, no
+  sustain) with a pick-noise transient and a brightness-to-dullness filter
+  sweep as it rings out.
+- **Electric Guitar**: the same plucked-string idea plus distortion (a
+  soft-clip waveshaper), finger vibrato, and amp-style tremolo.
+- **Violin**: a bowed string, meant to be held rather than tapped (slow
+  attack, high sustain), with prominent delayed vibrato and a brief
+  bow-catch noise transient at the start.
+- **Crystal Bell**: a high, glassy bell with a very long decay and a slow
+  filter sweep that darkens it as it rings out.
+- **Church Bell**: a big, deep bell with an extra sub-fundamental partial
+  and roughly twice Tubular Bell's decay times.
 
 Every preset has a `notes` field explaining exactly how its partial ratios,
 detunes, and envelopes were chosen and what its practical range is (JSON
@@ -88,10 +103,10 @@ saved/loaded `.json` file). Read it in the JSON textarea after selecting a
 preset.
 
 Play by name or frequency in the "base note" field (accepts `A3`, `C#4`,
-`220`, etc). Sustaining presets (Drawbar Organ, Warm Pad) respond to
-press-and-hold; one-shot presets (the bells, the pluck, and Falling Bell)
-auto-release themselves once their slowest partial finishes decaying, so a
-single click or tap is enough.
+`220`, etc). Sustaining presets (Drawbar Organ, Warm Pad, Violin) respond
+to press-and-hold; one-shot presets (everything else) auto-release
+themselves once their slowest partial finishes decaying, so a single click
+or tap is enough.
 
 #### Preset JSON schema
 
@@ -104,6 +119,16 @@ single click or tap is enough.
   "oneShot": true,
   "outputGainDb": -4,
   "filter": { "type": "lowpass", "frequency": 6000, "q": 0.7 }, // or null
+  "filterEnvelope": {            // optional; sweeps the filter above over time
+    "startFrequency": 6000, "endFrequency": 800, "duration": 2.5, "curve": "exponential"
+  },
+  "distortion": { "amount": 4 },          // optional; tanh soft-clip waveshaper
+  "vibrato": { "rateHz": 6, "depthCents": 20, "delay": 0.2 },  // optional; pitch LFO
+  "tremolo": { "rateHz": 5, "depth": 0.15 },                   // optional; amplitude LFO
+  "noiseBurst": {                // optional; one-shot filtered noise transient
+    "amplitude": 0.3, "filterType": "bandpass", "filterFrequency": 3000,
+    "filterQ": 1, "attack": 0.001, "decay": 0.04, "decayCurve": "exponential"
+  },
   "envelope": {                 // used by any partial that omits its own
     "attack": 0.01, "decay": 1.5, "sustain": 0, "release": 0.3,
     "attackCurve": "linear", "decayCurve": "exponential", "releaseCurve": "exponential"
@@ -123,6 +148,38 @@ single click or tap is enough.
 `detuneCents` adds fine detune on top of that, handy for slow beating
 between two close partials.
 
+**`noiseBurst`** layers in a one-shot filtered noise transient at the
+attack, on top of the tonal partials: pick/strike/bow-catch character that
+pure sine partials cannot produce on their own. It always plays once on its
+own short `attack`/`decay` schedule and is not affected by `oneShot` or how
+long the note is held; there is currently no way to make it loop or sustain
+for the whole note (a real bow's continuous friction noise, for example,
+is not modeled, only its initial catch).
+
+**`filterEnvelope`** sweeps the preset's filter cutoff from
+`startFrequency` to `endFrequency` over `duration` seconds, independent of
+the amplitude envelope above. This is the difference between a sound that
+just gets quieter as it decays and one that also gets duller, which is
+usually the more important part of what makes a pluck or a bell convincing.
+If the preset has no `filter` block, one (a default lowpass) is created
+automatically to host the sweep.
+
+**`distortion`** runs the voice through a WaveShaper soft-clip curve before
+the filter, the difference between "guitar" and "electric guitar." `amount`
+is unitless drive; higher values clip harder. The curve is normalized so
+turning the drive up does not also turn the volume up.
+
+**`vibrato`** is a shared LFO connected to every partial's detune, so the
+whole voice's pitch wobbles together rather than each partial drifting
+independently. `rateHz` is the wobble speed, `depthCents` its size, and
+`delay` (seconds) lets the vibrato fade in after the note starts, matching
+how a player often holds a note straight before adding vibrato.
+
+**`tremolo`** is an LFO added to the voice's overall output level, swinging
+it by roughly `+/- depth` (0 to 1) around its static level at `rateHz`
+times per second; this is independent of `vibrato`, which modulates pitch
+rather than loudness.
+
 `pitchGlide` slides every partial's actual frequency together over time:
 each partial goes from `baseFrequency * startRatio * partial.ratio` to
 `baseFrequency * endRatio * partial.ratio` across `duration` seconds, so
@@ -131,14 +188,24 @@ others proportionally (it never goes inharmonic mid-glide). `endRatio` is
 usually `1`, so the glide lands exactly on whatever note you actually
 played. `curve` is `"linear"` (constant Hz/second) or `"exponential"`
 (constant musical interval/second, which is what a natural-sounding pitch
-sweep almost always wants). There is no dedicated slider for this yet;
-edit the four fields directly in the JSON textarea and click Apply to hear
-changes immediately in the current session, or Save to keep them in a
-`.json` file.
+sweep almost always wants).
+
+You do not need to touch this JSON to try a glide: the synth panel has a
+**Quick pitch glide** fieldset (`js/main.js`, `buildGlideOverride()`) with
+plain number/select controls for direction (start above and slide down, or
+start below and slide up), how many octaves away from the note it starts,
+duration, and curve. Checking "Apply a pitch glide on the next play" layers
+a `pitchGlide` onto whichever preset is currently selected for just the
+next note, without ever touching `currentPreset`, the JSON textarea, or
+what gets saved, so it really is session-only by default. If you like the
+result and want to keep it, either copy the values the preview line shows
+into the preset's JSON yourself and click Apply, or set `pitchGlide`
+directly in the textarea as shown above; either way, only an explicit Save
+writes it to a file.
 
 Edit any preset's JSON directly in the "advanced editing" textarea and
 click Apply, or load/save a `.json` file with the buttons above it. Files
-exported from the app already match this schema, including the six
+exported from the app already match this schema, including the eleven
 built-ins under `presets/`.
 
 ## Hotkeys
@@ -191,13 +258,14 @@ js/
   stereo-router.js           duplicate-to-both-channels + invert/mute
   phase-align-controller.js  slider-delta -> phase-nudge-pulse logic
   additive-voice.js          multi-partial synth voice (noteOn/noteOff)
-  presets-data.js            the five built-in presets
+  synthesis-extras.js        shared noise-buffer and distortion-curve helpers
+  presets-data.js            the eleven built-in presets
   preset-store.js            preset validation, clone, JSON (de)serialize
   file-io.js                 save-as-file / open-file-picker helpers
   announcer.js                aria-live wrapper
   hotkeys.js                  global keyboard shortcut registry
   main.js                     wires all of the above to the DOM
-presets/*.json               the five built-ins, exported to disk for reference
+presets/*.json               the eleven built-ins, exported to disk for reference
 ```
 
 Every module is a focused, independently readable piece: audio graph nodes,

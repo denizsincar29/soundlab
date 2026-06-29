@@ -1,0 +1,114 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Nylon Guitar",
+  "description": "Plucked nylon string with pick noise and a brightness sweep.",
+  "notes": "Eight harmonic partials with amplitude roughly falling off as 1/n, the typical spectrum of a string plucked away from its very middle, and decay times that shorten for higher harmonics, since high-frequency string vibration loses energy to air and the body faster than the fundamental does. A short noiseBurst (bandpass around 3.2kHz) adds the fingertip/nail transient at the very start. A filterEnvelope sweeps an auto-created lowpass from 5.5kHz down to 900Hz over 2.5 seconds, on top of the amplitude decay, which is what actually sells \"plucked string\" rather than \"bell\": the tone gets duller, not just quieter, as it rings out. No sustain; it always behaves like a pluck regardless of how long the play button is held.",
+  "baseFrequencyDefault": 220,
+  "oneShot": true,
+  "outputGainDb": -3,
+  "noiseBurst": {
+    "amplitude": 0.25,
+    "filterType": "bandpass",
+    "filterFrequency": 3200,
+    "filterQ": 0.8,
+    "attack": 0.001,
+    "decay": 0.04,
+    "decayCurve": "exponential"
+  },
+  "filterEnvelope": {
+    "startFrequency": 5500,
+    "endFrequency": 900,
+    "duration": 2.5,
+    "curve": "exponential"
+  },
+  "partials": [
+    {
+      "ratio": 1,
+      "amplitude": 1,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 3.2,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 2,
+      "amplitude": 0.55,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 2.6,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 3,
+      "amplitude": 0.38,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 2.1,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 4,
+      "amplitude": 0.28,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.7,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 5,
+      "amplitude": 0.2,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.4,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 6,
+      "amplitude": 0.16,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.1,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 7,
+      "amplitude": 0.12,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 0.9,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 8,
+      "amplitude": 0.09,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 0.7,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    }
+  ]
+}

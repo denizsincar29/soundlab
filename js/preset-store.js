@@ -48,6 +48,54 @@ export function validatePreset(preset) {
   if (!preset.envelope && preset.partials && preset.partials.some((p) => !p.envelope)) {
     errors.push('Provide a top-level "envelope", or an "envelope" on every partial.');
   }
+  if (preset.noiseBurst !== undefined) {
+    const nb = preset.noiseBurst;
+    if (!nb || typeof nb !== 'object') {
+      errors.push('"noiseBurst" must be an object.');
+    } else if (nb.amplitude !== undefined && (typeof nb.amplitude !== 'number' || nb.amplitude < 0)) {
+      errors.push('"noiseBurst.amplitude" must be a non-negative number.');
+    }
+  }
+  if (preset.filterEnvelope !== undefined) {
+    const fe = preset.filterEnvelope;
+    if (!fe || typeof fe !== 'object') {
+      errors.push('"filterEnvelope" must be an object with startFrequency, endFrequency, and duration.');
+    } else {
+      if (typeof fe.startFrequency !== 'number' || !(fe.startFrequency > 0)) {
+        errors.push('"filterEnvelope.startFrequency" must be a positive number.');
+      }
+      if (typeof fe.endFrequency !== 'number' || !(fe.endFrequency > 0)) {
+        errors.push('"filterEnvelope.endFrequency" must be a positive number.');
+      }
+      if (typeof fe.duration !== 'number' || !(fe.duration > 0)) {
+        errors.push('"filterEnvelope.duration" must be a positive number of seconds.');
+      }
+    }
+  }
+  if (preset.distortion !== undefined) {
+    const dist = preset.distortion;
+    if (!dist || typeof dist !== 'object') {
+      errors.push('"distortion" must be an object with an "amount".');
+    } else if (typeof dist.amount !== 'number' || !(dist.amount > 0)) {
+      errors.push('"distortion.amount" must be a positive number.');
+    }
+  }
+  if (preset.vibrato !== undefined) {
+    const vib = preset.vibrato;
+    if (!vib || typeof vib !== 'object') {
+      errors.push('"vibrato" must be an object with a "rateHz".');
+    } else if (typeof vib.rateHz !== 'number' || !(vib.rateHz > 0)) {
+      errors.push('"vibrato.rateHz" must be a positive number.');
+    }
+  }
+  if (preset.tremolo !== undefined) {
+    const trem = preset.tremolo;
+    if (!trem || typeof trem !== 'object') {
+      errors.push('"tremolo" must be an object with a "rateHz".');
+    } else if (typeof trem.rateHz !== 'number' || !(trem.rateHz > 0)) {
+      errors.push('"tremolo.rateHz" must be a positive number.');
+    }
+  }
   return errors;
 }
 

@@ -1,0 +1,126 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Electric Guitar",
+  "description": "Overdriven electric guitar: pick attack, mild distortion, finger vibrato, and amp tremolo.",
+  "notes": "Same 1/n-falloff plucked-string idea as Nylon Guitar, but longer decays (electric strings plus amp sustain ring longer than nylon) and a sharper, highpass-filtered pick click instead of a soft bandpass thump. Three more layers on top: distortion (a tanh soft-clip waveshaper, amount 4, a warm overdrive rather than a full fuzz) is the difference between \"guitar\" and \"electric guitar\"; vibrato (6Hz, 12 cents, fading in after 0.2s, like a player adding finger vibrato partway through a held note) wobbles every partial together; tremolo (5Hz, 12% depth) is the classic amp tremolo-circuit wobble in volume, independent of the vibrato in pitch. The filterEnvelope sweeps brighter and longer (7kHz to 1.2kHz over 3.5s) than the nylon guitar, matching how magnetic pickups emphasize more top end at the attack.",
+  "baseFrequencyDefault": 293.66,
+  "oneShot": true,
+  "outputGainDb": -6,
+  "distortion": {
+    "amount": 4
+  },
+  "vibrato": {
+    "rateHz": 6,
+    "depthCents": 12,
+    "delay": 0.2
+  },
+  "tremolo": {
+    "rateHz": 5,
+    "depth": 0.12
+  },
+  "noiseBurst": {
+    "amplitude": 0.3,
+    "filterType": "highpass",
+    "filterFrequency": 4000,
+    "filterQ": 0.7,
+    "attack": 0.001,
+    "decay": 0.025,
+    "decayCurve": "exponential"
+  },
+  "filterEnvelope": {
+    "startFrequency": 7000,
+    "endFrequency": 1200,
+    "duration": 3.5,
+    "curve": "exponential"
+  },
+  "partials": [
+    {
+      "ratio": 1,
+      "amplitude": 1,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 4.5,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 2,
+      "amplitude": 0.6,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 3.8,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 3,
+      "amplitude": 0.45,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 3,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 4,
+      "amplitude": 0.25,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 2.4,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 5,
+      "amplitude": 0.18,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.9,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 6,
+      "amplitude": 0.14,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.5,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 7,
+      "amplitude": 0.1,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.1,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 8,
+      "amplitude": 0.07,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 0.8,
+        "sustain": 0,
+        "release": 0.15,
+        "decayCurve": "exponential"
+      }
+    }
+  ]
+}

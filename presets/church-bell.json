@@ -1,0 +1,135 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Church Bell",
+  "description": "Big, deep bell with an extra sub-fundamental partial and a very long decay.",
+  "notes": "Built on the same idea as Tubular Bell (inharmonic ratios, a couple of detuned pairs that beat slowly, independent per-partial decay), extended with a ratio-0.3 partial well below everything else for the massive low \"thud\" a large cast bell has underneath its ring, and roughly twice the decay times throughout. Here a low default pitch (A2) is exactly the point, unlike Tubular Bell where it was the problem; a church bell is supposed to sound cavernous. A static warm lowpass plus a slow filterEnvelope (7kHz to 2kHz over 6 seconds) tame the harsher upper partials as it settles.",
+  "baseFrequencyDefault": 110,
+  "oneShot": true,
+  "outputGainDb": -5,
+  "filter": {
+    "type": "lowpass",
+    "frequency": 7000,
+    "q": 0.6
+  },
+  "filterEnvelope": {
+    "startFrequency": 7000,
+    "endFrequency": 2000,
+    "duration": 6,
+    "curve": "exponential"
+  },
+  "partials": [
+    {
+      "ratio": 0.3,
+      "amplitude": 0.6,
+      "envelope": {
+        "attack": 0.004,
+        "decay": 10,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 0.561,
+      "detuneCents": 2,
+      "amplitude": 1,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 9,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 0.565,
+      "detuneCents": -2,
+      "amplitude": 0.9,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 8.5,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 0.92,
+      "amplitude": 0.85,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 7,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 0.923,
+      "detuneCents": -3,
+      "amplitude": 0.75,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 6.5,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 1.19,
+      "amplitude": 0.7,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 5,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 1.7,
+      "amplitude": 0.5,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 3.5,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 2,
+      "amplitude": 0.45,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 3,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 2.74,
+      "amplitude": 0.3,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 2,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 3.76,
+      "amplitude": 0.2,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 1.2,
+        "sustain": 0,
+        "release": 0.4,
+        "decayCurve": "exponential"
+      }
+    }
+  ]
+}

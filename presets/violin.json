@@ -1,0 +1,71 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Violin",
+  "description": "Bowed string: slow bow-catch attack, sustained while held, with prominent vibrato.",
+  "notes": "Unlike the plucked instruments above, this is meant to be pressed and held, like an actual bow stroke: attack is slower (0.12s, the bow gripping the string rather than an instant pluck) and sustain is high (0.85) so the tone holds steady for as long as you hold the button, with a fairly quick release (0.3s) for the bow lifting off. Vibrato is much more prominent than the guitar presets (6Hz, 28 cents) and fades in over its first third of a second, the classic delayed vibrato of a sustained bowed note. A brief noiseBurst (bandpass around 3kHz, 70ms) stands in for the bow catching the string at the very start; be aware this engine only supports one-shot noise transients, so it cannot model the continuous bow noise a real violin has for the whole note, only that initial catch. Default base note is A4, the violin's open A string.",
+  "baseFrequencyDefault": 440,
+  "oneShot": false,
+  "outputGainDb": -5,
+  "filter": {
+    "type": "lowpass",
+    "frequency": 6000,
+    "q": 0.6
+  },
+  "vibrato": {
+    "rateHz": 6,
+    "depthCents": 28,
+    "delay": 0.3
+  },
+  "noiseBurst": {
+    "amplitude": 0.18,
+    "filterType": "bandpass",
+    "filterFrequency": 3000,
+    "filterQ": 1.2,
+    "attack": 0.005,
+    "decay": 0.07,
+    "decayCurve": "exponential"
+  },
+  "envelope": {
+    "attack": 0.12,
+    "decay": 0.15,
+    "sustain": 0.85,
+    "release": 0.3,
+    "attackCurve": "linear",
+    "decayCurve": "linear",
+    "releaseCurve": "exponential"
+  },
+  "partials": [
+    {
+      "ratio": 1,
+      "amplitude": 1
+    },
+    {
+      "ratio": 2,
+      "amplitude": 0.7
+    },
+    {
+      "ratio": 3,
+      "amplitude": 0.55
+    },
+    {
+      "ratio": 4,
+      "amplitude": 0.4
+    },
+    {
+      "ratio": 5,
+      "amplitude": 0.3
+    },
+    {
+      "ratio": 6,
+      "amplitude": 0.22
+    },
+    {
+      "ratio": 7,
+      "amplitude": 0.16
+    },
+    {
+      "ratio": 8,
+      "amplitude": 0.1
+    }
+  ]
+}

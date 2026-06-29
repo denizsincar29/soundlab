@@ -51,6 +51,12 @@ const presetSelect = document.getElementById('preset-select');
 const baseNoteInput = document.getElementById('base-note');
 const baseNoteFrequencyOutput = document.getElementById('base-note-frequency');
 const synthPlayBtn = document.getElementById('synth-play-btn');
+const glideEnabledCheckbox = document.getElementById('glide-enabled');
+const glideDirectionSelect = document.getElementById('glide-direction');
+const glideOctavesInput = document.getElementById('glide-octaves');
+const glideDurationInput = document.getElementById('glide-duration');
+const glideCurveSelect = document.getElementById('glide-curve');
+const glidePreviewOutput = document.getElementById('glide-preview');
 const presetLoadBtn = document.getElementById('preset-load-btn');
 const presetSaveBtn = document.getElementById('preset-save-btn');
 const presetJsonTextarea = document.getElementById('preset-json');
@@ -267,6 +273,7 @@ function loadPresetIntoUI(preset) {
     baseNoteInput.value = label;
   }
   updateBaseNoteFrequencyDisplay();
+  updateGlidePreview();
 }
 
 // Updates the visible Hz readout only, with no live-region announcement.
@@ -287,6 +294,7 @@ presetSelect.addEventListener('change', () => {
 
 baseNoteInput.addEventListener('input', () => {
   updateBaseNoteFrequencyDisplay();
+  updateGlidePreview();
   // Debounced: only announce once typing pauses, so "could not parse" does
   // not get spoken after every single keystroke of a half-typed note name.
   clearTimeout(baseNoteAnnounceTimer);
@@ -306,6 +314,54 @@ baseNoteInput.addEventListener('blur', () => {
   }
 });
 
+// Quick pitch glide: a temporary, in-memory override layered on top of
+// whatever preset is selected, for trying out a pitch sweep without typing
+// JSON. It only ever affects the next AdditiveVoice that gets played; it
+// never touches currentPreset, the JSON textarea, or what gets saved, so
+// it really is "this session only" as long as you do not explicitly copy
+// it into the JSON yourself.
+function buildGlideOverride() {
+  if (!glideEnabledCheckbox.checked) return null;
+  const octaves = Math.max(0, Number(glideOctavesInput.value) || 0);
+  const duration = Math.max(0.05, Number(glideDurationInput.value) || 4);
+  const curve = glideCurveSelect.value === 'linear' ? 'linear' : 'exponential';
+  const factor = Math.pow(2, octaves);
+  const startRatio = glideDirectionSelect.value === 'up' ? 1 / factor : factor;
+  return { startRatio, endRatio: 1, duration, curve };
+}
+
+function updateGlidePreview() {
+  if (!glideEnabledCheckbox.checked) {
+    glidePreviewOutput.textContent = '';
+    return;
+  }
+  const baseFreq = parseFrequencyInput(baseNoteInput.value);
+  const glide = buildGlideOverride();
+  if (!baseFreq || !glide) {
+    glidePreviewOutput.textContent = '';
+    return;
+  }
+  const startFreq = baseFreq * glide.startRatio;
+  const endFreq = baseFreq * glide.endRatio;
+  glidePreviewOutput.textContent =
+    `Will glide from ${frequencyToNoteLabel(startFreq)}, ${startFreq.toFixed(1)} Hz, ` +
+    `to ${frequencyToNoteLabel(endFreq)}, ${endFreq.toFixed(1)} Hz, over ${glide.duration} seconds.`;
+}
+
+glideEnabledCheckbox.addEventListener('change', () => {
+  const enabled = glideEnabledCheckbox.checked;
+  [glideDirectionSelect, glideOctavesInput, glideDurationInput, glideCurveSelect].forEach((el) => {
+    el.disabled = !enabled;
+  });
+  updateGlidePreview();
+  announcer.say(enabled ? 'Pitch glide enabled for the next play.' : 'Pitch glide disabled.');
+});
+
+[glideDirectionSelect, glideOctavesInput, glideDurationInput, glideCurveSelect].forEach((el) => {
+  el.addEventListener('input', updateGlidePreview);
+  el.addEventListener('change', updateGlidePreview);
+});
+
 async function synthNoteOn() {
   await ensureAudioStarted();
   const freq = parseFrequencyInput(baseNoteInput.value);
@@ -314,6 +370,11 @@ async function synthNoteOn() {
     return;
   }
   if (currentVoice) currentVoice.stopNow();
+  // Layer the quick glide override on top of currentPreset for just this
+  // one voice, without mutating currentPreset itself (so the JSON textarea
+  // and Save button are unaffected; this really is session-only).
+  const glideOverride = buildGlideOverride();
+  const presetToPlay = glideOverride ? { ...currentPreset, pitchGlide: glideOverride } : currentPreset;
   // Capture this specific voice in a local variable rather than relying on
   // the module-level currentVoice binding inside the auto-release timer
   // below. Without this, pressing play again before a one-shot preset
@@ -321,11 +382,11 @@ async function synthNoteOn() {
   // and calls noteOff on whatever currentVoice happens to be by then (the
   // newer voice), cutting it off after a seemingly arbitrary, but actually
   // exactly-leftover, amount of time.
-  const voice = new AdditiveVoice(engine.ctx, engine.destination, currentPreset);
+  const voice = new AdditiveVoice(engine.ctx, engine.destination, presetToPlay);
   currentVoice = voice;
   const { sustainStartTime } = voice.noteOn(freq);
   announcer.say(`Playing ${currentPreset.name} at ${freq.toFixed(1)} hertz.`);
-  if (currentPreset.oneShot) {
+  if (presetToPlay.oneShot) {
     const delayMs = Math.max(0, (sustainStartTime - engine.ctx.currentTime) * 1000);
     setTimeout(() => {
       // Only auto-release if this voice is still the one playing. If the

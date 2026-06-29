@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Phase Lab: waveforms, antiphase, and additive synthesis</title>
-<meta name="description" content="Generate waveforms, compare in-phase and antiphase signals, align phase across two devices by ear, and play additive synth presets like bells and organs.">
+<title>Sound Lab: waveforms, antiphase, and additive synthesis instruments</title>
+<meta name="description" content="Generate waveforms, compare in-phase and antiphase signals, align phase across two devices by ear, and play additive synth presets from bells and organs to plucked and bowed strings and overdriven electric guitar.">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
 <header>
-  <h1>Phase Lab</h1>
-  <p class="tagline">Waveforms, antiphase, and additive synthesis, all in the browser.</p>
+  <h1>Sound Lab</h1>
+  <p class="tagline">Waveforms, antiphase, and additive synthesis, from bells to strings to guitar, all in the browser.</p>
 
   <div id="audio-gate" class="panel">
     <button type="button" id="enable-audio-btn">Enable audio</button>
@@ -130,7 +130,7 @@
 
   <section id="synth" aria-labelledby="synth-heading" class="panel">
     <h2 id="synth-heading">Synth presets</h2>
-    <p>An additive synthesis instrument. Every preset is a list of partials (sine components at frequency ratios of a base note), each with its own attack, decay, sustain and release. Bells use many independently decaying, slightly mistuned partials; organs use a small stack of harmonics that sustain evenly while held.</p>
+    <p>An additive synthesis instrument. Every preset is a list of partials (sine components at frequency ratios of a base note), each with its own attack, decay, sustain and release, plus optional noise bursts, filter sweeps, distortion, vibrato, and tremolo. Presets range from bells and organs to plucked nylon and electric guitar to a bowed violin; see each preset's notes for how it is built. The pitch glide control below lets you add a "swoop" to any preset for the current session without touching its JSON.</p>
 
     <div class="field">
       <label for="preset-select">Preset</label>
@@ -144,6 +144,43 @@
     </div>
 
     <button type="button" id="synth-play-btn">Play preset (press and hold for sustaining presets)</button>
+
+    <fieldset id="pitch-glide-fieldset">
+      <legend>Quick pitch glide (this session only, not saved with the preset)</legend>
+
+      <div class="field checkbox-field">
+        <input type="checkbox" id="glide-enabled">
+        <label for="glide-enabled">Apply a pitch glide on the next play</label>
+      </div>
+
+      <div class="field">
+        <label for="glide-direction">Direction</label>
+        <select id="glide-direction" disabled>
+          <option value="down">Start above the note, glide down</option>
+          <option value="up">Start below the note, glide up</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="glide-octaves">Octaves away from the note at the start</label>
+        <input type="number" id="glide-octaves" min="0" max="4" step="0.1" value="2" disabled>
+      </div>
+
+      <div class="field">
+        <label for="glide-duration">Glide duration (seconds)</label>
+        <input type="number" id="glide-duration" min="0.1" max="20" step="0.1" value="4" disabled>
+      </div>
+
+      <div class="field">
+        <label for="glide-curve">Glide curve</label>
+        <select id="glide-curve" disabled>
+          <option value="exponential">Exponential (constant musical interval per second, the natural-sounding option)</option>
+          <option value="linear">Linear (constant Hz per second)</option>
+        </select>
+      </div>
+
+      <output id="glide-preview" aria-live="off"></output>
+    </fieldset>
 
     <div class="field-row">
       <button type="button" id="preset-load-btn">Load preset from a JSON file</button>
@@ -181,7 +218,7 @@
 </main>
 
 <footer>
-  <p>Phase Lab runs entirely in your browser using the Web Audio API. Nothing is recorded, uploaded, or sent anywhere.</p>
+  <p>Sound Lab runs entirely in your browser using the Web Audio API. Nothing is recorded, uploaded, or sent anywhere.</p>
 </footer>
 
 <script type="module" src="js/main.js"></script>

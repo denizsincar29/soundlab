@@ -1,0 +1,74 @@
+{
+  "schema": "phaselab-preset@1",
+  "name": "Crystal Bell",
+  "description": "High, glassy bell with a very long shimmering decay and an evolving brightness sweep.",
+  "notes": "Five partials at near-harmonic ratios (1, 2.01, 3, 4.02, 6), with two of them detuned by a single cent so they beat extremely slowly against their neighbor across the whole multi-second decay, the shimmer. What really sets this apart from Tubular Bell is the filterEnvelope: it sweeps an auto-created lowpass from a very open 9kHz down to 1.2kHz over the full 8-second decay, so the tone is glassy and bright right at the strike and gradually darkens as it rings out, on top of (not instead of) each partial fading on its own separate schedule. High default pitch (C6) keeps it sounding crystalline rather than cavernous.",
+  "baseFrequencyDefault": 1046.5,
+  "oneShot": true,
+  "outputGainDb": -3,
+  "filterEnvelope": {
+    "startFrequency": 9000,
+    "endFrequency": 1200,
+    "duration": 8,
+    "curve": "exponential"
+  },
+  "partials": [
+    {
+      "ratio": 1,
+      "amplitude": 1,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 9,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 2.01,
+      "detuneCents": 1,
+      "amplitude": 0.6,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 7,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 3,
+      "amplitude": 0.4,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 5,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 4.02,
+      "detuneCents": -1,
+      "amplitude": 0.25,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 3.5,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    },
+    {
+      "ratio": 6,
+      "amplitude": 0.12,
+      "envelope": {
+        "attack": 0.002,
+        "decay": 2,
+        "sustain": 0,
+        "release": 0.3,
+        "decayCurve": "exponential"
+      }
+    }
+  ]
+}
