@@ -271,3 +271,20 @@ presets/*.json               the eleven built-ins, exported to disk for referenc
 Every module is a focused, independently readable piece: audio graph nodes,
 envelope math, and DOM wiring are kept apart so any one of them can be
 reused (or replaced) without touching the rest.
+
+## Deployment
+
+Sound Lab is a pure static site (HTML, CSS, ES6 modules, no build step,
+nothing to compile), so deploying it is just copying the right files to a
+web root. `rebuild.sh` does that with rsync:
+
+```
+./rebuild.sh                       # deploy to /var/www/html/soundlab
+./rebuild.sh /custom/path          # deploy somewhere else
+```
+
+It copies `index.html`, `css/`, `js/`, and `presets/`, skips `.git/`,
+`README.md`, and itself, and uses `--delete` so a renamed or removed file
+does not linger on the server from a previous deploy. It must be served
+over `http(s)`, not opened as a `file://` URL, since browsers block ES6
+module imports on that scheme.
